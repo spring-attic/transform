@@ -1,4 +1,4 @@
-# Trasnform Processor
+# Transform Processor
 
 To learn more about this application and the supported properties, please review the following link.
 
