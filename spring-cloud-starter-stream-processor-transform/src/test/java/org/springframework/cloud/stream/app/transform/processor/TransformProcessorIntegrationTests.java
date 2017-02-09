@@ -18,13 +18,11 @@ package org.springframework.cloud.stream.app.transform.processor;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.cloud.stream.annotation.Bindings;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.integration.config.SpelFunctionFactoryBean;
@@ -46,13 +44,11 @@ import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.
  * @author Artem Bilan
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = TransformProcessorIntegrationTests.TransformProcessorApplication.class)
-@WebIntegrationTest(randomPort = true)
 @DirtiesContext
+@SpringBootTest
 public abstract class TransformProcessorIntegrationTests {
 
 	@Autowired
-	@Bindings(TransformProcessorConfiguration.class)
 	protected Processor channels;
 
 	@Autowired
@@ -70,7 +66,7 @@ public abstract class TransformProcessorIntegrationTests {
 		}
 	}
 
-	@IntegrationTest("transformer.expression=payload.toUpperCase()")
+	@SpringBootTest("transformer.expression=payload.toUpperCase()")
 	public static class UsingExpressionIntegrationTests extends TransformProcessorIntegrationTests {
 
 		@Autowired
