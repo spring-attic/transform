@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.cloud.stream.app</groupId>
     <artifactId>transform-app-dependencies</artifactId>
-    <version>1.1.2.BUILD-SNAPSHOT</version>
+    <version>1.2.0.M1</version>
     <packaging>pom</packaging>
     <name>transform-app-dependencies</name>
     <description>Spring Cloud Stream transform App Dependencies</description>
@@ -20,7 +20,7 @@
             <dependency>
                 <groupId>org.springframework.cloud.stream.app</groupId>
                 <artifactId>spring-cloud-starter-stream-processor-transform</artifactId>
-                <version>1.1.2.BUILD-SNAPSHOT</version>
+                <version>1.2.0.M1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
