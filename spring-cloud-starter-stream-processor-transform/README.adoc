@@ -1,12 +1,31 @@
 //tag::ref-doc[]
 = Transform Processor
+
 Use the transform app in a stream to convert a Message's content or structure.
 
-The transform processor is used by passing a SpEL expression. The expression should return the modified message or payload. For example, `--expression=payload.toUpperCase()`.
-
-This transform will convert all message payloads to upper case.
+The transform processor is used by passing a SpEL expression. The expression should return the modified message or payload. 
 
 As part of the SpEL expression you can make use of the pre-registered JSON Path function. The syntax is #jsonPath(payload,'<json path expression>')
+
+== Input
+
+=== Headers
+
+N/A
+
+=== Payload
+
+* Any
+
+== Output
+
+=== Headers
+
+N/A
+
+=== Payload
+
+* Any
 
 == Options
 
@@ -17,8 +36,23 @@ $$transformer.expression$$:: $$<documentation missing>$$ *($$Expression$$, defau
 //end::configuration-properties[]
 
 //end::ref-doc[]
-== Building with Maven
+== Build
 
 ```
-$> mvn package
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
 ```
+You can find the corresponding binder based projects here.
+You can then cd into one one of the folders and build it:
+```
+$ ./mvnw clean package
+```
+
+== Examples
+
+```
+java -jar transform-processor.jar --expression=payload.toUpperCase()
+```
+
+This transform will convert all message payloads to upper case.
+
