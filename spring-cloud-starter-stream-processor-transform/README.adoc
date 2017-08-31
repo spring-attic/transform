@@ -35,7 +35,6 @@ The **$$transform$$** $$processor$$ has the following options:
 $$transformer.expression$$:: $$<documentation missing>$$ *($$Expression$$, default: `$$payload$$`)*
 //end::configuration-properties[]
 
-//end::ref-doc[]
 == Build
 
 ```
@@ -56,3 +55,4 @@ java -jar transform-processor.jar --expression=payload.toUpperCase()
 
 This transform will convert all message payloads to upper case.
 
+//end::ref-doc[]
