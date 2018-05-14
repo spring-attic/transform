@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Processor;
-import org.springframework.integration.annotation.Transformer;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
 
 /**
@@ -37,7 +37,7 @@ public class TransformProcessorConfiguration {
 	@Autowired
 	private TransformProcessorProperties properties;
 
-	@Transformer(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
+	@ServiceActivator(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
 	public Object transform(Message<?> message) {
 		return properties.getExpression().getValue(message);
 	}
