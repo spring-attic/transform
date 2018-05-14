@@ -16,6 +16,9 @@
 
 package org.springframework.cloud.stream.app.transform.processor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,6 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.integration.config.SpelFunctionFactoryBean;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -83,6 +87,19 @@ public abstract class TransformProcessorIntegrationTests {
 			assertNotNull(this.xpathSpelFunctionFactoryBean);
 			this.channels.input().send(new GenericMessage<Object>("hello"));
 			assertThat(this.collector.forChannel(this.channels.output()), receivesPayloadThat(is("HELLO")));
+		}
+	}
+
+	@SpringBootTest("transformer.expression=new String(payload)")
+	public static class PayloadTypeDifferentFromOutputContentTypeTests extends TransformProcessorIntegrationTests {
+
+		@Test
+		public void test() {
+			Map<String, Object> headers = new HashMap<>();
+			headers.put(MessageHeaders.CONTENT_TYPE, "application/octet-stream");
+			channels.input().send(new GenericMessage<Object>("hello".getBytes(), new MessageHeaders(headers)));
+
+			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("hello")));
 		}
 	}
 
