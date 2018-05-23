@@ -18,10 +18,10 @@ package org.springframework.cloud.stream.app.transform.processor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Processor;
-import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
+
+import java.util.function.Function;
 
 /**
  * A Processor app that transforms messages using a SpEL expression.
@@ -30,16 +30,15 @@ import org.springframework.messaging.Message;
  * @author Marius Bogoevici
  * @author Gary Russell
  */
-@EnableBinding(Processor.class)
 @EnableConfigurationProperties(TransformProcessorProperties.class)
 public class TransformProcessorConfiguration {
 
 	@Autowired
 	private TransformProcessorProperties properties;
 
-	@ServiceActivator(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
-	public Object transform(Message<?> message) {
-		return properties.getExpression().getValue(message);
+	@Bean
+	public Function<Message<?>,Object> transformFunc() {
+		return t -> properties.getExpression().getValue(t);
 	}
 
 }
