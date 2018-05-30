@@ -18,7 +18,9 @@ package org.springframework.cloud.stream.app.transform.processor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.stream.app.invoker.StreamHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 
 import java.util.function.Function;
@@ -31,12 +33,14 @@ import java.util.function.Function;
  * @author Gary Russell
  */
 @EnableConfigurationProperties(TransformProcessorProperties.class)
+@Configuration
 public class TransformProcessorConfiguration {
 
 	@Autowired
 	private TransformProcessorProperties properties;
 
 	@Bean
+	@StreamHandler
 	public Function<Message<?>,Object> transformFunc() {
 		return t -> properties.getExpression().getValue(t);
 	}
