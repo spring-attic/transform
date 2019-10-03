@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 the original author or authors.
+ * Copyright 2015-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.springframework.cloud.stream.app.transform.processor;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.stream.converter.TupleJsonMessageConverter;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.integration.config.SpelFunctionFactoryBean;
@@ -37,9 +35,8 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.tuple.Tuple;
-import org.springframework.tuple.TupleBuilder;
 import org.springframework.util.MimeType;
+import org.springframework.util.MimeTypeUtils;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
@@ -115,9 +112,16 @@ public abstract class TransformProcessorIntegrationTests {
 	public static class OctetPayloadForTextJsonTupleContentTypesTests extends TransformProcessorIntegrationTests {
 
 		@Test
+		public void testDefaultContentType() {
+			Message<byte[]> message = MessageBuilder.withPayload("{\"foo\":\"bar\"}".getBytes()).build();
+			channels.input().send(message);
+			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("{\"FOO\":\"BAR\"}")));
+		}
+
+		@Test
 		public void testJson() {
 			Message<byte[]> message = MessageBuilder.withPayload("{\"foo\":\"bar\"}".getBytes())
-					.setHeader("contentType", new MimeType("json")).build();
+					.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON).build();
 			channels.input().send(message);
 			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("{\"FOO\":\"BAR\"}")));
 		}
@@ -125,18 +129,9 @@ public abstract class TransformProcessorIntegrationTests {
 		@Test
 		public void testText() {
 			Message<byte[]> message = MessageBuilder.withPayload("hello".getBytes())
-					.setHeader("contentType", new MimeType("text")).build();
+					.setHeader(MessageHeaders.CONTENT_TYPE, new MimeType("text")).build();
 			channels.input().send(message);
 			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("HELLO")));
-		}
-
-		@Test
-		public void testTuple() {
-			Tuple tuple = TupleBuilder.tuple().of("foo", "bar");
-			Message<byte[]> message = (Message<byte[]>) new TupleJsonMessageConverter(
-					new ObjectMapper()).toMessage(tuple, new MessageHeaders(new HashMap<>()));
-			channels.input().send(message);
-			assertThat(collector.forChannel(channels.output()), receivesPayloadThat(is("{\"FOO\":\"BAR\"}")));
 		}
 	}
 
